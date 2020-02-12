@@ -16,6 +16,7 @@ public class AnglerFisher extends Script {
 
     private ABCUtil antiBan;
     private RSArea bankArea;
+    private RSArea fishingArea;
 
     public static void main(String[] args) {
 
@@ -24,7 +25,7 @@ public class AnglerFisher extends Script {
     public AnglerFisher() {
         this.antiBan = new ABCUtil();
         this.bankArea = new RSArea(new RSTile(1793, 3796, 0), new RSTile(1814, 3779, 0));
-
+        this.fishingArea = new RSArea(new RSTile(1822, 3774, 0), new RSTile(1839, 3776, 0));
     }
 
     @Override
@@ -38,10 +39,11 @@ public class AnglerFisher extends Script {
             fish();
 
             if (Inventory.isFull()) {
-
                 bank();
                 antiBan.close();
+                WebWalking.walkTo(fishingArea.getRandomTile());
             }
+
 
         }
 
@@ -55,6 +57,10 @@ public class AnglerFisher extends Script {
         while (true) {
             RSNPC[] fishingSpot = NPCs.findNearest(100, 6825);
             if (fishingSpot.length > 0) {
+
+                if (Inventory.isFull()) {
+                    break;
+                }
 
                 this.antiBan.selectNextTarget(fishingSpot);
                 this.antiBan.shouldHover();
